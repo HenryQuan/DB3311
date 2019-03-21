@@ -1,3 +1,8 @@
+/*
+    This is the first assignment for COMP3311 19T1
+    Yiheng Quan z5098268
+*/
+
 -- Q1
 -- List all the company names (and countries) that are incorporated outside Australia.
 -- create or replace view Q1(Name, Country) as ...
