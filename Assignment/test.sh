@@ -1,4 +1,3 @@
-#!/bin/sh
 dropdb a1
 createdb a1
 psql a1 -f asx-schema.sql
