@@ -34,7 +34,9 @@ group by Sector order by Sector;
 -- Find all the executives (i.e., their names) that are affiliated with companies in the sector of "Technology". If an
 -- executive is affiliated with more than one company, he/she is counted if one of these companies is in the sector of
 -- "Technology".
--- create or replace view Q5(Name) as ...
+create or replace view Q5(Name) as
+select E.Person from Executive as E, Category as C
+where C.Sector = 'Technology' and C.Code = E.Code;
 
 -- Q6
 -- List all the company names in the sector of "Services" that are located in Australia with the first digit of their zip code
