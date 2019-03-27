@@ -5,7 +5,9 @@
 
 -- Q1
 -- List all the company names (and countries) that are incorporated outside Australia.
--- create or replace view Q1(Name, Country) as ...
+create or replace view Q1(Name, Country) as
+select Name, Country from Company                  
+where Country != 'Australia';
 
 -- Q2 
 -- List all the company codes that have more than five executive members on record (i.e., at least six).
