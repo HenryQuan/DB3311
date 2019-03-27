@@ -65,37 +65,37 @@ where M.Volume = A.Volume;
 
 -- Q9
 -- Find the number of companies per Industry. Order your result by Sector and then by Industry.
--- create or replace view Q9(Sector, Industry, Number) as ...
+create or replace view Q9(Sector, Industry, Number) as
 
 -- Q10
 -- List all the companies (by their Code) that are the only one in their Industry (i.e., no competitors).
--- create or replace view Q10(Code, Industry) as ...
+create or replace view Q10(Code, Industry) as
 
 -- Q11
 -- List all sectors ranked by their average ratings in descending order. AvgRating is calculated by finding the average
 -- AvgCompanyRating for each sector (where AvgCompanyRating is the average rating of a company).
--- create or replace view Q11(Sector, AvgRating) as ...
+create or replace view Q11(Sector, AvgRating) as
 
 -- Q12
 -- Output the person names of the executives that are affiliated with more than one company.
--- create or replace view Q12(Name) as ...
+create or replace view Q12(Name) as
 
 -- Q13
 -- Find all the companies with a registered address in Australia, in a Sector where there are no overseas companies in the
 -- same Sector. i.e., they are in a Sector that all companies there have local Australia address.
--- create or replace view Q13(Code, Name, Address, Zip, Sector) as ...
+create or replace view Q13(Code, Name, Address, Zip, Sector) as
 
 -- Q14
 -- Calculate stock gains based on their prices of the first trading day and last trading day (i.e., the oldest "Date" and the
 -- most recent "Date" of the records stored in the ASX table). Order your result by Gain in descending order and then by
 -- Code in ascending order.
--- create or replace view Q14(Code, BeginPrice, EndPrice, Change, Gain) as ...
+create or replace view Q14(Code, BeginPrice, EndPrice, Change, Gain) as
 
 -- Q15
 -- For all the trading records in the ASX table, produce the following statistics as a database view (where Gain is
 -- measured in percentage). AvgDayGain is defined as the summation of all the daily gains (in percentage) then divided by
 -- the number of trading days (as noted above, the total number of days here should exclude the first trading day).
--- create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as ...
+create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as
 
 -- Q16
 -- Create a trigger on the Executive table, to check and disallow any insert or update of a Person in the Executive table to
