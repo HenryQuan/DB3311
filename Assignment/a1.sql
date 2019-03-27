@@ -19,7 +19,9 @@ having Count(*) > 5;
 
 -- Q3
 -- List all the company names that are in the sector of "Technology"
--- create or replace view Q3(Name) as ...
+create or replace view Q3(Name) as
+select C.Name from Category as T, Company as C
+where T.Sector = 'Technology' and T.Code = C.Code;
 
 -- Q4
 -- Find the number of Industries in each Sector
