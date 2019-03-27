@@ -41,7 +41,9 @@ where C.Sector = 'Technology' and C.Code = E.Code;
 -- Q6
 -- List all the company names in the sector of "Services" that are located in Australia with the first digit of their zip code
 -- being 2.
--- create or replace view Q6(Name) as ...
+create or replace view Q6(Name) as
+select C.Name from Company as C, Category as T
+where C.Country = 'Australia' and C.Zip like '2%' and T.Sector = 'Services' and C.Code = T.Code;
 
 -- Q7
 -- Create a database view of the ASX table that contains previous Price, Price change (in amount, can be negative) and
