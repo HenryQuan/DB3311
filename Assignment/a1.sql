@@ -85,6 +85,10 @@ group by C.Sector;
 -- Q12
 -- Output the person names of the executives that are affiliated with more than one company.
 create or replace view Q12(Name) as
+select Person from Executive
+group by Person
+having Count(*) > 1
+order by Person;
 
 -- Q13
 -- Find all the companies with a registered address in Australia, in a Sector where there are no overseas companies in the
