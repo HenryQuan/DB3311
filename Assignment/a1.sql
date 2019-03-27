@@ -71,6 +71,8 @@ order by Sector, Industry;
 -- Q10
 -- List all the companies (by their Code) that are the only one in their Industry (i.e., no competitors).
 create or replace view Q10(Code, Industry) as
+select C.Code, M.Industry from Category as C, (select Industry from Category group by Industry having Count(*) = 1) as M
+where C.Industry = M.Industry;
 
 -- Q11
 -- List all sectors ranked by their average ratings in descending order. AvgRating is calculated by finding the average
