@@ -78,6 +78,9 @@ where C.Industry = M.Industry;
 -- List all sectors ranked by their average ratings in descending order. AvgRating is calculated by finding the average
 -- AvgCompanyRating for each sector (where AvgCompanyRating is the average rating of a company).
 create or replace view Q11(Sector, AvgRating) as
+select C.Sector, Avg(R.star) from Category as C, Rating as R
+where C.Code = R.Code
+group by C.Sector;
 
 -- Q12
 -- Output the person names of the executives that are affiliated with more than one company.
