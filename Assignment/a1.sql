@@ -11,7 +11,11 @@ where Country != 'Australia';
 
 -- Q2 
 -- List all the company codes that have more than five executive members on record (i.e., at least six).
--- create or replace view Q2(Code) as ...
+create or replace view Q2(Code) as
+select E.Code from Executive as E
+group by E.Code
+-- You need to use having while using functions
+having Count(*) > 5;
 
 -- Q3
 -- List all the company names that are in the sector of "Technology"
