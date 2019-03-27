@@ -55,7 +55,13 @@ where C.Country = 'Australia' and C.Zip like '2%' and T.Sector = 'Services' and 
 -- Q8
 -- Find the most active trading stock (the one with the maximum trading volume; if more than one, output all of them) on
 -- every trading day. Order your output by "Date" and then by Code.
--- create or replace view Q8("Date", Code, Volume) as ...
+create or replace view Q8("Date", Code, Volume) as
+select M."Date", A.Code, M.Volume from
+(select "Date", Max(Volume) as Volume from ASX
+group by "Date"
+order by "Date") as M, ASX as A
+where M.Volume = A.Volume;
+
 
 -- Q9
 -- Find the number of companies per Industry. Order your result by Sector and then by Industry.
