@@ -25,7 +25,10 @@ where T.Sector = 'Technology' and T.Code = C.Code;
 
 -- Q4
 -- Find the number of Industries in each Sector
--- create or replace view Q4(Sector, Number) as ...
+create or replace view Q4(Sector, Number) as
+select Sector, Count(*) from 
+(select Sector, Industry from Category group by Sector, Industry) as One
+group by Sector order by Sector;
 
 -- Q5
 -- Find all the executives (i.e., their names) that are affiliated with companies in the sector of "Technology". If an
