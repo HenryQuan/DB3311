@@ -51,7 +51,7 @@ where C.Country = 'Australia' and C.Zip like '2%' and T.Sector = 'Services' and 
 -- example, if the PrevPrice is 1.00, Price is 0.85; then Change is -0.15 and Gain is -15.00 (in percentage but you do not
 -- need to print out the percentage sign).
 create or replace view Q7("Date", Code, Volume, PrevPrice, Price, Change, Gain) as
-with am as (select "Date", Code, Volume, (lag(Price, 1) over (partition by Code order by "Date")) as old, Price, price - old as change from ASX)
+with am as (select "Date", Code, Volume, lag(Price, 1) over (partition by Code order by "Date") as old, Price, price - lag(Price, 1) over (partition by Code order by "Date") as change, (price - lag(Price, 1) over (partition by Code order by "Date")) / lag(Price, 1) over (partition by Code order by "Date") * 10 as gain from ASX)
 select * from am
 where old is not null;
 
