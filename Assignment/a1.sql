@@ -125,9 +125,10 @@ inner join R on R.Code = FH.Code;
 -- Create a trigger on the Executive table, to check and disallow any insert or update of a Person in the Executive table to
 -- be an executive of more than one company.
 create or replace function 
-    Q16() return trigger
+    Q16() returns trigger
 as $$
 begin
+    return null;
 end;
 $$ language 'plpgsql';
 
@@ -140,10 +141,10 @@ $$ language 'plpgsql';
 -- stock has performed the worst in the sector in terms of daily percentage price gain. If there are more than one record of
 -- rating for a given stock that need to be updated, update (not insert) all these records.
 create or replace function 
-    Q17() return trigger
+    Q17() returns trigger
 as $$
 begin
-
+    return null;
 end;
 $$ language 'plpgsql';
 
@@ -155,9 +156,9 @@ $$ language 'plpgsql';
 -- be the same as their original, old values. Timestamp is the date and time that the correction takes place. Note that it is
 -- also possible that a record is corrected more than once, i.e., same Date and Code but different Timestamp.
 create or replace function 
-    Q18() return trigger
+    Q18() returns trigger
 as $$
 begin
-
+    return null;
 end;
 $$ language 'plpgsql';
