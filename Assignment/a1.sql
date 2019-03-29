@@ -103,6 +103,9 @@ where C.Code = T.Code and T.Sector = M.Sector;
 -- most recent "Date" of the records stored in the ASX table). Order your result by Gain in descending order and then by
 -- Code in ascending order.
 create or replace view Q14(Code, BeginPrice, EndPrice, Change, Gain) as
+select Code, min(volume), max(volume) from ASX
+group by Code;
+
 
 -- Q15
 -- For all the trading records in the ASX table, produce the following statistics as a database view (where Gain is
