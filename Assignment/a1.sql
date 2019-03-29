@@ -50,7 +50,7 @@ where C.Country = 'Australia' and C.Zip like '2%' and T.Sector = 'Services' and 
 -- Price gain (in percentage, can be negative). (Note that the first trading day should be excluded in your result.) For
 -- example, if the PrevPrice is 1.00, Price is 0.85; then Change is -0.15 and Gain is -15.00 (in percentage but you do not
 -- need to print out the percentage sign).
--- create or replace view Q7("Date", Code, Volume, PrevPrice, Price, Change, Gain) as ...
+create or replace view Q7("Date", Code, Volume, PrevPrice, Price, Change, Gain) as ...
 
 -- Q8
 -- Find the most active trading stock (the one with the maximum trading volume; if more than one, output all of them) on
@@ -103,9 +103,10 @@ where C.Code = T.Code and T.Sector = M.Sector;
 -- most recent "Date" of the records stored in the ASX table). Order your result by Gain in descending order and then by
 -- Code in ascending order.
 create or replace view Q14(Code, BeginPrice, EndPrice, Change, Gain) as
-select Code, min(volume), max(volume) from ASX
-group by Code;
-
+with D as (select Code, min("Date"), max("Date") from ASX group by Code)
+select OD.Code, OD.FP, A.Price as LF, (A.Price - OD.FP) as Diff from ASX as A, (select D.*, A.Price as FP from ASX as A, D where A."Date" = D.min and A.Code = D.Code) as OD
+where A."Date" = OD.max and A.Code = OD.Code;
+order by Gain desc, Code asc
 
 -- Q15
 -- For all the trading records in the ASX table, produce the following statistics as a database view (where Gain is
