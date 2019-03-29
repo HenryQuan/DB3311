@@ -50,7 +50,10 @@ where C.Country = 'Australia' and C.Zip like '2%' and T.Sector = 'Services' and 
 -- Price gain (in percentage, can be negative). (Note that the first trading day should be excluded in your result.) For
 -- example, if the PrevPrice is 1.00, Price is 0.85; then Change is -0.15 and Gain is -15.00 (in percentage but you do not
 -- need to print out the percentage sign).
-create or replace view Q7("Date", Code, Volume, PrevPrice, Price, Change, Gain) as ...
+create or replace view Q7("Date", Code, Volume, PrevPrice, Price, Change, Gain) as
+with am as (select "Date", Code, Volume, (lag(Price, 1) over (partition by Code order by "Date")) as old, Price, price - old as change from ASX)
+select * from am
+where old is not null;
 
 -- Q8
 -- Find the most active trading stock (the one with the maximum trading volume; if more than one, output all of them) on
