@@ -128,6 +128,12 @@ create or replace function
     Q16() returns trigger
 as $$
 begin
+    select Person from Executive
+    group by Person
+    having Count(*) > 1
+    order by Person;
+    if then
+    end if
     return null;
 end;
 $$ language 'plpgsql';
