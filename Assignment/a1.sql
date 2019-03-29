@@ -94,9 +94,8 @@ order by Person;
 -- Find all the companies with a registered address in Australia, in a Sector where there are no overseas companies in the
 -- same Sector. i.e., they are in a Sector that all companies there have local Australia address.
 create or replace view Q13(Code, Name, Address, Zip, Sector) as
-select C.Code, C.Name, C.Address, C.Zip, T.Sector from Company as C, Category as T, (select T.Sector from Category as T, Company as C where C.Code = T.Code group by T.Sector
 -- Count number of entry in Category and Australian companies
-having count(case C.Country when 'Australia' then 1 else null end) = count(T.*)) as M
+select C.Code, C.Name, C.Address, C.Zip, T.Sector from Company as C, Category as T, (select T.Sector from Category as T, Company as C where C.Code = T.Code group by T.Sector having count(case C.Country when 'Australia' then 1 else null end) = count(T.*)) as M
 where C.Code = T.Code and T.Sector = M.Sector;
 
 -- Q14
