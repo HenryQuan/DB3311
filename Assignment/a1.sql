@@ -116,6 +116,10 @@ order by Gain desc, Code asc;
 -- measured in percentage). AvgDayGain is defined as the summation of all the daily gains (in percentage) then divided by
 -- the number of trading days (as noted above, the total number of days here should exclude the first trading day).
 create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as
+with GD as (select A.* from ASX as A, (select min("Date") from ASX) as MD where A."Date" != MD.min), FH as (select Code, min(Price), avg(Price), max(Price) from GD group by Code),
+R as (select Code, count(*), min(Gain), avg(Gain), max(Gain) from Q7 group by Code)
+select FH.*, R.min, R.avg, R.max from FH
+inner join R on R.Code = FH.Code;
 
 -- Q16
 -- Create a trigger on the Executive table, to check and disallow any insert or update of a Person in the Executive table to
