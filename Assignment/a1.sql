@@ -124,6 +124,12 @@ inner join R on R.Code = FH.Code;
 -- Q16
 -- Create a trigger on the Executive table, to check and disallow any insert or update of a Person in the Executive table to
 -- be an executive of more than one company.
+create or replace function 
+    Q16() return trigger
+as $$
+begin
+end;
+$$ language 'plpgsql';
 
 -- Q17
 -- Suppose more stock trading data are incoming into the ASX table. Create a trigger to increase the stock's rating (as
@@ -133,6 +139,13 @@ inner join R on R.Code = FH.Code;
 -- the same maximum price gain, update all these stocks' ratings to 5. Otherwise, decrease the stock's rating to 1 when the
 -- stock has performed the worst in the sector in terms of daily percentage price gain. If there are more than one record of
 -- rating for a given stock that need to be updated, update (not insert) all these records.
+create or replace function 
+    Q17() return trigger
+as $$
+begin
+
+end;
+$$ language 'plpgsql';
 
 -- Q18
 -- Stock price and trading volume data are usually incoming data and seldom involve updating existing data. However,
@@ -141,3 +154,10 @@ inner join R on R.Code = FH.Code;
 -- (only for update, not inserts) into the ASXLog table. Here we assume that Date and Code cannot be corrected and will
 -- be the same as their original, old values. Timestamp is the date and time that the correction takes place. Note that it is
 -- also possible that a record is corrected more than once, i.e., same Date and Code but different Timestamp.
+create or replace function 
+    Q18() return trigger
+as $$
+begin
+
+end;
+$$ language 'plpgsql';
