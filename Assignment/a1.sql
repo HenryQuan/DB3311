@@ -94,8 +94,10 @@ order by Person;
 -- Find all the companies with a registered address in Australia, in a Sector where there are no overseas companies in the
 -- same Sector. i.e., they are in a Sector that all companies there have local Australia address.
 create or replace view Q13(Code, Name, Address, Zip, Sector) as
-select T.Sector, C.Name from Category as T, Company as C
-where C.Code = T.Code and C.Country = 'Australia';
+select C.Code, C.Name, C.Address, C.Zip, T.Sector from Company as C, Category as T, (select T.Sector from Category as T, Company as C where C.Code = T.Code group by T.Sector
+-- Count number of entry in Category and Australian companies
+having count(case C.Country when 'Australia' then 1 else null end) = count(T.*)) as M
+where C.Code = T.Code and T.Sector = M.Sector;
 
 -- Q14
 -- Calculate stock gains based on their prices of the first trading day and last trading day (i.e., the oldest "Date" and the
