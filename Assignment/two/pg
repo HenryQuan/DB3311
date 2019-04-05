@@ -28,7 +28,7 @@ while ($t = dbNext($r)) {
   if (!empty($t[2]))
     echo ", $t[2]";
   if (!empty($t[3]))
-      echo ", $t[3]";
+    echo ", $t[3]";
   echo ")\n";
   $i++;
 }
