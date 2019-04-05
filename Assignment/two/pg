@@ -1,6 +1,5 @@
 #!/usr/bin/php
 <?php
-
 //
 // pg - print all PG and PG-13 movies of a given year
 //
@@ -8,11 +7,8 @@
 // include the common PHP code file
 require("a2.php");
 
-
-
-// PROGRAM BODY BEGINS
-
 $usage = "Usage: $argv[0] Year";
+// Init connection with database
 $db = dbConnect(DB_CONNECTION);
 
 // Check arguments
@@ -20,11 +16,13 @@ if (count($argv) < 2) exit("$usage\n");
 
 // Get the return results
 $val = $argv[1];
+// This is the query string in one line
 $q = "select title, content_rating, lang, duration from movie where year = %d and content_rating in ('PG','PG-13') order by title";
+// This is the result point
 $r = dbQuery($db, mkSQL($q, $val));
 
-// Iterate through the results and print
-$i = 1;
+// Iterate through the results (getting results) and print
+$i = 1; // Number
 while ($t = dbNext($r)) {
   echo "$i. $t[0] ($t[1]";
   if (!empty($t[2]))
