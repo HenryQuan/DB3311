@@ -13,6 +13,7 @@ if (count($argv) < 2) exit("$usage\n");
 
 // Get the return results
 $value = $argv[1];
+// TODO: use outer join
 $q = "select M.title, D.name, M.year, M.content_rating, R.imdb_score
 from Movie as M, Acting as A, Actor as T, Director as D, Rating as R
 where M.id = A.movie_id and T.id = A.actor_id and lower(T.name) = lower('james franco') and M.director_id = D.id and M.id = R.movie_id
@@ -34,43 +35,11 @@ while ($t = dbNext($r)) {
 
 # Some names for testing
 
-/*
-Donna Murphy
-Robert Downey Jr.
-Daniel Radcliffe
-Lauren Cohan
-Marlon Brando
-Ruth Wilson
-Christopher Meloni
-Pierfrancesco Favino
-Adam Brown
-Kate Winslet
-Alan Rickman
-Sophia Myles
-Mila Kunis
-Paul Walker
-Peter Dinklage
-Elizabeth Debicki
-Lester Speight
-Jack McGraw
-Melissa Roxburgh
-Colin Firth
-Kiran Shah
-Michael Fassbender
-Heath Ledger
-Jeff Bridges
-Brendan Fraser
-Lara Pulver
-Rick Aviles
-Sharlto Copley
-Alice Englert
-Cary-Hiroyuki Tagawa
-Kathy Griffin
-Daniel Henney
-Sarah Silverman
-Tom Hardy
-Shin'ya Tsukamoto
-Philip Seymour
+/* 
+Poeple who acts in a yea unknown movie:
+    Martin Short
+    Andrea Martin
+    Joe Flaherty
 */
 
 ?>
