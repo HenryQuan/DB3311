@@ -16,7 +16,7 @@ $value = $argv[1];
 // TODO: use outer join
 $q = "select M.title, D.name, M.year, M.content_rating, R.imdb_score
 from Movie as M, Acting as A, Actor as T, Director as D, Rating as R
-where M.id = A.movie_id and T.id = A.actor_id and lower(T.name) = lower('james franco') and M.director_id = D.id and M.id = R.movie_id
+where M.id = A.movie_id and T.id = A.actor_id and lower(T.name) = lower('$value') and M.director_id = D.id and M.id = R.movie_id
 order by M.year, M.title";
 $r = dbQuery($db, mkSQL($q, $value));
 
@@ -24,11 +24,11 @@ $i = 1; // Number
 while ($t = dbNext($r)) {
   echo "$i. $t[0] -- $t[1] (";
   if (!empty($t[2]))
-    echo "$t[2]";
+    echo "$t[2], ";
   if (!empty($t[3]))
-    echo ", $t[3]";
+    echo "$t[3], ";
   if (!empty($t[4]))
-    echo ", $t[4]";
+    echo "$t[4]";
   echo ")\n";
   $i++;
 }
