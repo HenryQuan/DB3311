@@ -16,7 +16,7 @@ $value = $argv[1];
 
 $q = "select M.title, M.year, M.content_rating, R.imdb_score
 from Movie as M, Rating as R
-where lower(M.title) like '\%$value\%' and M.id = R.movie_id
+where lower(M.title) like lower('\%$value\%') and M.id = R.movie_id
 order by M.year, M.title";
 $r = dbQuery($db, mkSQL($q, $value));
 
