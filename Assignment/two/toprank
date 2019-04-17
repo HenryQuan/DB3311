@@ -35,8 +35,17 @@ if ($valid == false) exit("$usage\n");
 // extra query for genre
 $extra_query = '';
 if ($offset > 0) {
-
+  $extra_query = 'and (';
+  $genres = explode('&', $argv[1]);
+  foreach ($genres as $key => $value) {
+    $extra_query .= "Genre = $value";
+    if ($key != count($genres) - 1) $extra_query .= ' or ';
+  }
+  $extra_query .= ')';
 }
+
+// see if extra_query works
+// echo "$extra_query\n";
 
 $q = "select M.title, D.name, M.year, M.content_rating, R.imdb_score
       from Movie as M, Acting as A, Actor as T, Director as D, Rating as R
