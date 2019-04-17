@@ -8,48 +8,53 @@ $usage = "Usage: $argv[0] K StartYear EndYear\n       $argv[0] Genres K StartYea
 // Init connection with database
 //$db = dbConnect(DB_CONNECTION);
 
-// Check arguments
+// Check arguments at least 3 can be 4
 $arg_count = count($argv);
 if ($arg_count < 4) exit("$usage\n");
-if ($arg_count == 4) {
-  $q = "select M.title, D.name, M.year, M.content_rating, R.imdb_score
-        from Movie as M, Acting as A, Actor as T, Director as D, Rating as R
-        where M.id = A.movie_id and T.id = A.actor_id and lower(T.name) = lower('$value') and M.director_id = D.id and M.id = R.movie_id
-        order by M.year, M.title";
-  $r = dbQuery($db, mkSQL($q, $value));
 
-  $i = 1; // Number
-  while ($t = dbNext($r)) {
-    echo "$i. $t[0] -- $t[1] (";
-    if (!empty($t[2]))
-      echo "$t[2], ";
-    if (!empty($t[3]))
-      echo "$t[3], ";
-    if (!empty($t[4]))
-      echo "$t[4]";
-    echo ")\n";
-    $i++;
-  }
-} elseif ($arg_count > 4) {
-  // ignore 6th+ arguments
-  $q = "select M.title, D.name, M.year, M.content_rating, R.imdb_score
-        from Movie as M, Acting as A, Actor as T, Director as D, Rating as R
-        where M.id = A.movie_id and T.id = A.actor_id and lower(T.name) = lower('$value') and M.director_id = D.id and M.id = R.movie_id
-        order by M.year, M.title";
-  $r = dbQuery($db, mkSQL($q, $value));
+// Get offset of arguments
+$offset = 0;
+if ($arg_count > 4) $offset = 1;
 
-  $i = 1; // Number
-  while ($t = dbNext($r)) {
-    echo "$i. $t[0] -- $t[1] (";
-    if (!empty($t[2]))
-      echo "$t[2], ";
-    if (!empty($t[3]))
-      echo "$t[3], ";
-    if (!empty($t[4]))
-      echo "$t[4]";
-    echo ")\n";
-    $i++;
-  }
+// Simple input validation
+$k = $argv[1 + $offset];
+$start_year = $argv[2 + $offset];
+$end_year = $argv[3 + $offset];
+
+$valid = false;
+// Valid input here
+if (is_numeric($k) && $k >= 1 && $k <= 1000) $valid = true;
+else $valid = false;
+if (is_numeric($start_year) && $start_year > 1900) $valid = true;
+else $valid = false;
+if (is_numeric($end_year) && $end_year >= $start_year && $end_year < 2020) $valid = true;
+else $valid = false;
+// Input show usage
+if ($valid == false) exit("$usage\n");
+
+// extra query for genre
+$extra_query = '';
+if ($offset > 0) {
+
+}
+
+$q = "select M.title, D.name, M.year, M.content_rating, R.imdb_score
+      from Movie as M, Acting as A, Actor as T, Director as D, Rating as R
+      where M.id = A.movie_id and T.id = A.actor_id and lower(T.name) = lower('$value') and M.director_id = D.id and M.id = R.movie_id
+      order by M.year, M.title";
+$r = dbQuery($db, mkSQL($q, $value));
+
+$i = 1; // Number
+while ($t = dbNext($r)) {
+  echo "$i. $t[0] -- $t[1] (";
+  if (!empty($t[2]))
+    echo "$t[2], ";
+  if (!empty($t[3]))
+    echo "$t[3], ";
+  if (!empty($t[4]))
+    echo "$t[4]";
+  echo ")\n";
+  $i++;
 }
 
 ?>
