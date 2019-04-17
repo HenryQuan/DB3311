@@ -46,7 +46,7 @@ while ($t = dbNext($r)) {
     $i++;
   } else {
     if (!empty($t[4]))
-      echo ", $t[4]";
+      echo ",$t[4]";
     // If curr does not change, do not increase i
   }
 }
