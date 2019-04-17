@@ -14,23 +14,44 @@ if (count($argv) < 2) exit("$usage\n");
 // Get the return results
 $value = $argv[1];
 
-$q = "select M.title, M.year, M.content_rating, R.imdb_score
-from Movie as M, Rating as R
-where lower(M.title) like lower('\%$value\%') and M.id = R.movie_id
-order by M.year, M.title";
+$q = "select M.title, M.year, M.content_rating, R.imdb_score, G.genre
+from Movie as M, Rating as R, Genre as G
+where lower(M.title) like lower('\%$value\%') and M.id = R.movie_id and M.id = G.movie_id
+order by M.year, M.title, G.genre";
 $r = dbQuery($db, mkSQL($q, $value));
 
 $i = 1; // Number
+$curr = '';
+$printed = false;
 while ($t = dbNext($r)) {
-  echo "$i. $t[0] (";
-  if (!empty($t[1]))
-    echo "$t[1], ";
-  if (!empty($t[2]))
-    echo "$t[2], ";
-  if (!empty($t[3]))
-    echo "$t[3]";
-  echo ")\n";
-  $i++;
+  // Set initial value
+  if ($curr == '') {
+    $curr = $t[0];
+  }
+
+  if ($curr != $t[0]) {
+    echo ")\n";
+
+    $curr = $t[0];
+    $printed = false;
+    // If curr does not change, do not increase i
+    $i++;
+  } else {
+    // Print this if not yet printed (many entries)
+    if ($printed == false) {
+      echo "$i. $t[0] (";
+      if (!empty($t[1]))
+        echo "$t[1], ";
+      if (!empty($t[2]))
+        echo "$t[2], ";
+      if (!empty($t[3]))
+        echo "$t[3]";
+      echo ") [$t[4]";
+      $printed = true;
+    } else {
+      echo ", $t[4]";
+    }
+  }
 }
 
 ?>
