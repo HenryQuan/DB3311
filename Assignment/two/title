@@ -21,37 +21,39 @@ order by M.year, M.title, G.genre";
 $r = dbQuery($db, mkSQL($q, $value));
 
 $i = 1; // Number
-$curr = '';
-$printed = false;
+$curr = ''; // Track movies
 while ($t = dbNext($r)) {
-  // Set initial value
-  if ($curr == '') {
-    $curr = $t[0];
-  }
-
   if ($curr != $t[0]) {
-    echo ")\n";
+    if ($curr != '') {
+      // for initial value
+      echo "]\n";
+    }
 
     $curr = $t[0];
-    $printed = false;
-    // If curr does not change, do not increase i
+    echo "$i. $t[0] (";
+    if (!empty($t[1]))
+      echo "$t[1], ";
+    if (!empty($t[2]))
+      echo "$t[2], ";
+    if (!empty($t[3]))
+      echo "$t[3]";
+    echo ") [";
+
+    // If no genre, it is just a []
+    if (!empty($t[4]))
+      echo "$t[4]";
+    
     $i++;
   } else {
-    // Print this if not yet printed (many entries)
-    if ($printed == false) {
-      echo "$i. $t[0] (";
-      if (!empty($t[1]))
-        echo "$t[1], ";
-      if (!empty($t[2]))
-        echo "$t[2], ";
-      if (!empty($t[3]))
-        echo "$t[3]";
-      echo ") [$t[4]";
-      $printed = true;
-    } else {
+    if (!empty($t[4]))
       echo ", $t[4]";
-    }
+    // If curr does not change, do not increase i
   }
+}
+
+// In case loop was never entered
+if ($curr != '') {
+  echo "]\n";
 }
 
 ?>
