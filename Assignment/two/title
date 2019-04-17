@@ -15,9 +15,9 @@ if (count($argv) < 2) exit("$usage\n");
 $value = $argv[1];
 
 $q = "select M.title, M.year, M.content_rating, R.imdb_score, G.genre
-from Movie as M, Rating as R, Genre as G
-where lower(M.title) like lower('\%$value\%') and M.id = R.movie_id and M.id = G.movie_id
-order by M.year, M.title, G.genre";
+      from Movie as M, Rating as R, Genre as G
+      where lower(M.title) like lower('\%$value\%') and M.id = R.movie_id and M.id = G.movie_id
+      order by M.year, M.title, G.genre";
 $r = dbQuery($db, mkSQL($q, $value));
 
 $i = 1; // Number
