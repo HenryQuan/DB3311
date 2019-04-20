@@ -45,26 +45,35 @@ if ($offset > 0) {
 }
 
 // see if extra_query works
-echo "$extra_query\n";
+// echo "$extra_query\n";
 
 // If genre is not found, nothing will be returned
 // You need Movie name, year, rating and language + rating and votes
 $q = "select M.title, M.year, M.content_rating, M.lang, R.imdb_score, R.num_voted_users
       from Movie as M, Rating as R
       where M.id = R.movie_id and (M.year >= $start_year and M.year <= $end_year)
-      order by M.year, M.title";
-$r = dbQuery($db, mkSQL($q, $value));
+      order by R.imdb_score desc, R.num_voted_users desc
+      limit $k";
+$r = dbQuery($db, mkSQL($q));
 
 $i = 1; // Number
 while ($t = dbNext($r)) {
-  echo "$i. $t[0] -- $t[1] (";
+  // First part
+  echo "$i. $t[0] (";
+  if (!empty($t[1]))
+    echo "$t[1], ";
   if (!empty($t[2]))
     echo "$t[2], ";
   if (!empty($t[3]))
-    echo "$t[3], ";
+    echo "$t[3]";
+  // Second part
+  echo ") [";
   if (!empty($t[4]))
-    echo "$t[4]";
-  echo ")\n";
+    echo "$t[4], ";
+  if (!empty($t[5]))
+    echo "$t[5]";
+  echo "]\n";
+
   $i++;
 }
 
