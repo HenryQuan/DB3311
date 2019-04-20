@@ -20,7 +20,7 @@ if (is_numeric($number) && $number >= 1 && $number <= 1000) $valid = true;
 if (!$valid) exit("$usage\n");
 
 $q = "with OnlyOne as (select id from Movie where title = Happy Feet order by year desc limit 1)
-      with AllGenre as ()
+      with AllGenre as (select M.id, count(G.Genre) as \"genre\" from Movie as M, Genre as G where M.id = G.movie_id group by M.id
       with AllKeyword as ()
       with ExtraInfo as ()";
 $q = "select M.title, D.name, M.year, M.content_rating, R.imdb_score
