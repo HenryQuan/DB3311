@@ -19,7 +19,8 @@ $valid = false;
 if (is_numeric($number) && $number >= 1 && $number <= 1000) $valid = true;
 if (!$valid) exit("$usage\n");
 
-$q = "with OnlyOne as (select id from Movie where title = $name order by year limit 1)";
+$q = "with OnlyOne as (select id from Movie where title = Happy Feet order by year desc limit 1)
+";
 $q = "select M.title, D.name, M.year, M.content_rating, R.imdb_score
       from Movie as M, Acting as A, Actor as T, Director as D, Rating as R
       where M.id = A.movie_id and T.id = A.actor_id and lower(T.name) = lower('$value') and M.director_id = D.id and M.id = R.movie_id
