@@ -64,7 +64,7 @@ $q .= "select M.title, M.year, M.content_rating, M.lang, R.imdb_score, R.num_vot
       where M.id = R.movie_id $extra_query and M.year is not NULL and (M.year >= $start_year and M.year <= $end_year)
       order by R.imdb_score desc, R.num_voted_users desc
       limit $k";
-echo "$q\n";
+// echo "$q\n";
 $r = dbQuery($db, mkSQL($q));
 
 $i = 1; // Number
