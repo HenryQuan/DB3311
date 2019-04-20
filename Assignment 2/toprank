@@ -35,21 +35,22 @@ if ($valid == false) exit("$usage\n");
 $q = '';
 // Different query for different mode
 if ($offset > 0) {
-  $extra_table = ', Genre as G';
-  $extra_query = 'and M.id = G.movie_id and (';
   $genres = explode('&', $argv[1]);
+  $count = count($genres);
+  $genreList = '(';
   foreach ($genres as $key => $value) {
-    $extra_query .= "lower(G.genre) = lower('$value')";
-    if ($key != count($genres) - 1) $extra_query .= ' or ';
+    $genreList .= "lower('$value')";
+    if ($key != count($genres) - 1) $genreList .= ', ';
   }
-  $extra_query .= ")";
+  $genreList .= ")";
   // see if extra_query works
   // echo "$extra_query\n";
 
   // If genre is not found, nothing will be returned
-  $q = "select M.title, M.year, M.content_rating, M.lang, R.imdb_score, R.num_voted_users, G.genre
-        from Movie as M, Rating as R
-        where M.id = R.movie_id and M.year is not NULL and (M.year >= $start_year and M.year <= $end_year)
+  $q = "with AllGenre as (select M.id from Movie as M, Genre as G where M.id = G.movie_id and lower(G.Genre) in $genreList group by M.id having count(distinct G.Genre) = $count)
+        select M.title, M.year, M.content_rating, M.lang, R.imdb_score, R.num_voted_users
+        from Movie as M, Rating as R, AllGenre as A
+        where M.id = R.movie_id and A.id = M.id and M.year is not NULL and (M.year >= $start_year and M.year <= $end_year)
         order by R.imdb_score desc, R.num_voted_users desc
         limit $k";
 } else {
@@ -61,7 +62,7 @@ if ($offset > 0) {
         limit $k";
 }
 
-// echo "$q\n";
+echo "$q\n";
 $r = dbQuery($db, mkSQL($q));
 
 $i = 1; // Number
