@@ -12,9 +12,14 @@ $db = dbConnect(DB_CONNECTION);
 $arg_count = count($argv);
 if ($arg_count < 3) exit("$usage\n");
 
-// Get the return results
-$value = $argv[1];
-// TODO: use outer join???
+$name = $argv[1];
+$number = $argv[2];
+// Check if Number is valid
+$valid = false;
+if (is_numeric($number) && $number >= 1 && $number <= 1000) $valid = true;
+if (!$valid) exit("$usage\n");
+
+$q = "with OnlyOne as (select id from Movie where title = $name order by year limit 1)";
 $q = "select M.title, D.name, M.year, M.content_rating, R.imdb_score
       from Movie as M, Acting as A, Actor as T, Director as D, Rating as R
       where M.id = A.movie_id and T.id = A.actor_id and lower(T.name) = lower('$value') and M.director_id = D.id and M.id = R.movie_id
