@@ -33,8 +33,13 @@ else $valid = false;
 if ($valid == false) exit("$usage\n");
 
 $q = '';
+$extra_table = '';
+$extra_query = '';
 // Different query for different mode
 if ($offset > 0) {
+  $extra_table = ', AllGenre as A';
+  $extra_query = 'and A.id = M.id';
+
   $genres = explode('&', $argv[1]);
   $count = count($genres);
   $genreList = '(';
@@ -43,25 +48,22 @@ if ($offset > 0) {
     if ($key != count($genres) - 1) $genreList .= ', ';
   }
   $genreList .= ")";
-  // see if extra_query works
-  // echo "$extra_query\n";
+  // see if genreList works
+  // echo "$genreList\n";
 
   // If genre is not found, nothing will be returned
-  $q = "with AllGenre as (select M.id from Movie as M, Genre as G where M.id = G.movie_id and lower(G.Genre) in $genreList group by M.id having count(distinct G.Genre) = $count)
-        select M.title, M.year, M.content_rating, M.lang, R.imdb_score, R.num_voted_users
-        from Movie as M, Rating as R, AllGenre as A
-        where M.id = R.movie_id and A.id = M.id and M.year is not NULL and (M.year >= $start_year and M.year <= $end_year)
-        order by R.imdb_score desc, R.num_voted_users desc
-        limit $k";
-} else {
-  // You need Movie name, year, rating and language + rating and votes
-  $q = "select M.title, M.year, M.content_rating, M.lang, R.imdb_score, R.num_voted_users
-        from Movie as M, Rating as R
-        where M.id = R.movie_id and M.year is not NULL and (M.year >= $start_year and M.year <= $end_year)
-        order by R.imdb_score desc, R.num_voted_users desc
-        limit $k";
+  $q = "with AllGenre as 
+        (select M.id from Movie as M, Genre as G 
+        where M.id = G.movie_id and lower(G.Genre) in $genreList 
+        group by M.id having count(distinct G.Genre) = $count)\n";
 }
 
+// You need Movie name, year, rating and language + rating and votes
+$q .= "select M.title, M.year, M.content_rating, M.lang, R.imdb_score, R.num_voted_users
+      from Movie as M, Rating as R$extra_table
+      where M.id = R.movie_id $extra_query and M.year is not NULL and (M.year >= $start_year and M.year <= $end_year)
+      order by R.imdb_score desc, R.num_voted_users desc
+      limit $k";
 echo "$q\n";
 $r = dbQuery($db, mkSQL($q));
 
