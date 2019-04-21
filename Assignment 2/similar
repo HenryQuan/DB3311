@@ -20,12 +20,12 @@ if (is_numeric($number) && $number >= 1 && $number <= 1000) $valid = true;
 if (!$valid) exit("$usage\n");
 
 // Lots of with...
-$q = "with OnlyOne as (select id from Movie where title = 'Happy Feet' order by year desc limit 1),
+$q = "with OnlyOne as (select id from Movie where title = '$name' order by year desc limit 1),
         OneGenre as (select G.Genre from Genre as G, OnlyOne as O where G.movie_id = O.id),
         OneKeyword as (select K.Keyword from Keyword as K, OnlyOne as O where K.movie_id = O.id),
-        AllGenre as (select M.id, count(*) as \"genre\" from Movie as M, Genre as G 
+        AllGenre as (select M.id, count(distinct G.genre) as \"genre\" from Movie as M, Genre as G 
           where M.id = G.movie_id and G.Genre in (select genre from OneGenre) group by M.id),
-        AllKeyword as (select M.id, count(*) as \"keyword\" from Movie as M, Keyword as K 
+        AllKeyword as (select M.id, count(distinct K.keyword) as \"keyword\" from Movie as M, Keyword as K 
           where M.id = K.movie_id and K.keyword in (select keyword from OneKeyword) group by M.id),
         ExtraInfo as (select M.id, M.title, M.year, R.imdb_score, R.num_voted_users from Movie as M, Rating as R where M.id = R.movie_id)
       select E.title, E.year, G.genre, K.keyword, E.imdb_score, E.num_voted_users
@@ -37,6 +37,10 @@ $r = dbQuery($db, mkSQL($q));
 
 $i = 1; // Number
 while ($t = dbNext($r)) {
+  // No genre matched
+  if (!empty($t[3]) && $t[3] == 0)
+    break;
+
   echo "$i. $t[0]";
   if (!empty($t[1]))
     echo " ($t[1])";
