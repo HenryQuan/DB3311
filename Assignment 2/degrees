@@ -11,4 +11,7 @@ $usage = "Usage: $argv[0] Name1 Name2";
 // Check arguments
 if (count($argv) < 3) exit("$usage\n");
 
+$name1 = $argv[1];
+$name2 = $argv[2];
+// Our job is to find all connections between them
 ?>
