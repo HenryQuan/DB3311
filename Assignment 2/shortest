@@ -14,10 +14,15 @@ if (count($argv) < 3) exit("$usage\n");
 $name1 = $argv[1];
 $name2 = $argv[2];
 // Our job is to find all connections between them
-$q = "with ActorOne as (select id from actor where lower(name) = lower('$name1')),
-           ActorTwo as (select id from actor where lower(name) = lower('$name2')),
+$q = "with Origin as (select id from actor where lower(name) = lower('$name1')),
            MovieOne as (select A.movie_id from Acting as A, ActorOne as O where A.actor_id = O.id)";
 $r = dbQuery($db, mkSQL($q));
+
+with recursive Tree(Title, Year, FromName, ToName) as
+(select 
+union all
+)
+select * from Tree;
 
 $i = 1; // Number
 while ($t = dbNext($r)) {
