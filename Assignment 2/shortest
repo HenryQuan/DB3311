@@ -1,4 +1,34 @@
 #!/usr/bin/php
 <?php
-print("Hello World\n");
+
+// include the common PHP code file
+require("a2.php");
+
+$usage = "Usage: $argv[0] Name1 Name2";
+// Init connection with database
+$db = dbConnect(DB_CONNECTION);
+
+// Check arguments
+if (count($argv) < 3) exit("$usage\n");
+
+$name1 = $argv[1];
+$name2 = $argv[2];
+// Our job is to find all connections between them
+$q = "with ActorOne as (select id from actor where lower(name) = lower('$name1')),
+           ActorTwo as (select id from actor where lower(name) = lower('$name2'))";
+$r = dbQuery($db, mkSQL($q));
+
+$i = 1; // Number
+while ($t = dbNext($r)) {
+  echo "$i. $t[0] -- $t[1] (";
+  if (!empty($t[2]))
+    echo "$t[2], ";
+  if (!empty($t[3]))
+    echo "$t[3], ";
+  if (!empty($t[4]))
+    echo "$t[4]";
+  echo ")\n";
+  $i++;
+}
+
 ?>
