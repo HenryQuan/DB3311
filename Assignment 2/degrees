@@ -1,4 +1,13 @@
 #!/usr/bin/php
 <?php
-print("Hello World\n");
+
+// include the common PHP code file
+require("a2.php");
+
+$usage = "Usage: $argv[0] Name Num1 Num2";
+// Init connection with database
+//$db = dbConnect(DB_CONNECTION);
+
+// Check arguments
+if (count($argv) < 3) exit("$usage\n");
 ?>

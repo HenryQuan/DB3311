@@ -18,9 +18,10 @@ $q = "with Origin as (select id from actor where lower(name) = lower('$name1')),
            MovieOne as (select A.movie_id from Acting as A, ActorOne as O where A.actor_id = O.id)";
 $r = dbQuery($db, mkSQL($q));
 
-with recursive Tree(Title, Year, FromName, ToName) as
-(select 
+with recursive Tree(parent_id, id, movie_id) as
+(select O.id, A.id, M.id from Origin as O, Actor as A, Movie as M where O.id = A.actor_id, M.id = A.movie_id
 union all
+select t.parent_id, t.id, t.movie_id from 
 )
 select * from Tree;
 
