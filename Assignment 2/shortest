@@ -15,24 +15,23 @@ $name = $argv[1];
 $num1 = $argv[2];
 $num2 = $argv[3];
 
-$q = "-- Create a table with all connections
-create or replace view Connection(A1, A2) as
-select distinct F.actor_id, S.actor_id from Acting as F, Acting as S
+$q = "-- Create a table with all paths
+create or replace view Path(A1, A2, ID) as
+select distinct F.actor_id, S.actor_id, F.movie_id from Acting as F, Acting as S
 where F.movie_id = S.movie_id and F.actor_id != S.actor_id;
 
 
--- find all connections recursively
-with recursive Tree(A1, A2, Degree) as (
-  select A1, A2, 1 as Degree from Connection where A1 = (select id from Actor where lower(name) = lower('$name'))
+-- find all paths recursively
+with recursive Tree(A1, A2, ID, SP) as (
+  select A1, A2, ID, 1 as SP from Path where A1 = (select id from Actor where lower(name) = lower('$name'))
 union all
-  select distinct T.A2, C.A2, T.Degree + 1 from Tree as T, Connection as C
-  where C.A1 = T.A2 and C.A2 != T.A1 and C.A2 != T.A2 and T.Degree < $num2
+  select distinct T.A2, C.A2, C.ID, T.SP + 1 from Tree as T, Path as C
+  where C.A1 = T.A2 and C.A2 != T.A1 and C.A2 != T.A2 and T.SP < $num2
 )
 
-
 -- format nicely and remove duplicates (there must be a better way)
-select A.name, F.Degree from (select T.A2, min(T.Degree) as Degree from Tree as T group by T.A2) as F, Actor as A
-where F.A2 = A.id and F.A2 != (select id from Actor where lower(name) = lower('$name')) and F.Degree >= $num1 and F.Degree <= $num2 order by F.Degree, A.name";
+select A.name, F.SP from (select T.A2, min(T.SP) as SP from Tree as T group by T.A2) as F, Actor as A
+where F.A2 = A.id and F.A2 != (select id from Actor where lower(name) = lower('$name')) and F.SP >= $num1 and F.SP <= $num2 order by F.SP, A.name";
 
 $r = dbQuery($db, mkSQL($q));
 
