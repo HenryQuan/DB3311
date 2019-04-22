@@ -24,7 +24,7 @@ where F.movie_id = S.movie_id and F.actor_id != S.actor_id;
 with recursive Tree(A1, A2, Degree) as (
   select A1, A2, 1 as Degree from Connection where A1 = (select id from Actor where lower(name) = lower('$name'))
 union all
-  select T.A2, C.A2, T.Degree + 1 from Tree as T, Connection as C
+  select distinct T.A2, C.A2, T.Degree + 1 from Tree as T, Connection as C
   where C.A1 = T.A2 and C.A2 != T.A1 and C.A2 != T.A2 and C.A1 != T.A1
   and T.Degree < $num2
 )
