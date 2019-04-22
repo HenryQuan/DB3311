@@ -10,4 +10,13 @@ $usage = "Usage: $argv[0] Name Num1 Num2";
 
 // Check arguments
 if (count($argv) < 3) exit("$usage\n");
+
+$name = $argv[1];
+$num1 = $argv[2];
+$num2 = $argv[3];
+
+with StepOne as (select movie_id from acting where actor_id = 100),
+     StepTwo as (select A.actor_id from Acting as A, StepOne as O where A.movie_id = O.movie_id)
+select * from StepTwo;
+// Get all connections between 
 ?>
