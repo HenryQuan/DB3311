@@ -15,26 +15,21 @@ $name = $argv[1];
 $num1 = $argv[2];
 $num2 = $argv[3];
 
-$q = 
-"with recursive Tree(Actor, Degree) as (
-    select (select id from Actor where lower(name) = lower('$name')) as Actor, 0 as Degree -- pass in starting actor id and 0 as the default degree
-union all
-    select distinct A.actor_id, (T.Degree + 1) as Degree from Acting as A, Tree as T
-    where T.Degree < $num2 and A.actor_id not in (Actor) and 
-    A.movie_id in (select distinct movie_id from Acting as A join T
-        on A.actor_id = T.actor_id)
-)
-select A.name, T.Degree from Tree as T, Actor as A
-where T.Actor = A.id order by A.name, T.Degree";
+$q = "-- Create a table with all connections
+create or replace view Connection(A1, A2) as
+select distinct F.actor_id, S.actor_id from Acting as F, Acting as S
+where F.movie_id = S.movie_id and F.actor_id != S.actor_id;
+
+select * from Connection";
 
 $r = dbQuery($db, mkSQL($q));
 
 $i = 1;
 while ($t = dbNext($r)) {
-  if ($t[1] >= $num1 && $t[1] <= $num2) {
+  //if ($t[1] >= $num1 && $t[1] <= $num2) {
     echo "$i. $t[0] ($t[1])\n";
     $i++;
-  }
+  //}
 }
 
 /*
@@ -47,16 +42,16 @@ where F.movie_id = S.movie_id and F.actor_id != S.actor_id;
 
 Oh my god this is too slow
 
-Explain with recursive Tree(Actor, Degree) as (
-    select (select id from Actor where name = 'Tom Cruise') as Actor, 0 as Degree -- pass in starting actor id and 0 as the default degree
+$q = "with recursive Tree(Actor, Degree) as (
+    select (select id from Actor where lower(name) = lower('$name')) as Actor, 0 as Degree -- pass in starting actor id and 0 as the default degree
 union all
     select distinct A.actor_id, (T.Degree + 1) as Degree from Acting as A, Tree as T
     where A.actor_id not in (Actor)
     and A.movie_id in (select distinct movie_id from Acting where actor_id in (Actor))
-    and T.Degree < 2 -- six degrees for now
+    and T.Degree < $num2
 )
 select A.name, T.Degree from Tree as T, Actor as A
-where T.Actor = A.id order by A.name
+where T.Actor = A.id order by A.name";
 */
 
 ?>
