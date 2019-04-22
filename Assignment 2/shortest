@@ -4,46 +4,40 @@
 // include the common PHP code file
 require("a2.php");
 
-$usage = "Usage: $argv[0] Name1 Name2";
+$usage = "Usage: $argv[0] Name Num1 Num2";
 // Init connection with database
 $db = dbConnect(DB_CONNECTION);
 
 // Check arguments
 if (count($argv) < 3) exit("$usage\n");
 
-$name1 = $argv[1];
-$name2 = $argv[2];
-// Our job is to find all connections between them
-$q = "with Origin as (select id from actor where lower(name) = lower('$name1')),
-           MovieOne as (select A.movie_id from Acting as A, ActorOne as O where A.actor_id = O.id)";
+$name = $argv[1];
+$num1 = $argv[2];
+$num2 = $argv[3];
+
+$q = "-- Create a table with all connections
+create or replace view Connection(A1, A2) as
+select distinct F.actor_id, S.actor_id from Acting as F, Acting as S
+where F.movie_id = S.movie_id and F.actor_id != S.actor_id;
+
+
+-- find all connections recursively
+with recursive Tree(A1, A2, Degree) as (
+  select A1, A2, 1 as Degree from Connection where A1 = (select id from Actor where lower(name) = lower('$name'))
+union all
+  select distinct T.A2, C.A2, T.Degree + 1 from Tree as T, Connection as C
+  where C.A1 = T.A2 and C.A2 != T.A1 and C.A2 != T.A2 and T.Degree < $num2
+)
+
+
+-- format nicely and remove duplicates (there must be a better way)
+select A.name, F.Degree from (select T.A2, min(T.Degree) as Degree from Tree as T group by T.A2) as F, Actor as A
+where F.A2 = A.id and F.A2 != (select id from Actor where lower(name) = lower('$name')) and F.Degree >= $num1 and F.Degree <= $num2 order by F.Degree, A.name";
+
 $r = dbQuery($db, mkSQL($q));
 
-with recursive Tree(parent_id, id, movie_id) as
-(select O.id, A.id, M.id from Origin as O, Actor as A, Movie as M where O.id = A.actor_id, M.id = A.movie_id
-union all
-select t.parent_id, t.id, t.movie_id from 
-)
-select * from Tree;
-
-$i = 1; // Number
+$i = 1;
 while ($t = dbNext($r)) {
-  echo "$i. $t[0] -- $t[1] (";
-  if (!empty($t[2]))
-    echo "$t[2], ";
-  if (!empty($t[3]))
-    echo "$t[3], ";
-  if (!empty($t[4]))
-    echo "$t[4]";
-  echo ")\n";
+  echo "$i. $t[0] ($t[1])\n";
   $i++;
 }
-
-/*
-This is really important for this question
-
-create or replace view Connection(A1, ID, A2) as
-select F.actor_id, F.movie_id, S.actor_id from Acting as F, Acting as S
-where F.movie_id = S.movie_id and F.actor_id != S.actor_id;
-*/
-
-?>
