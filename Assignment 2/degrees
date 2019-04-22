@@ -16,11 +16,11 @@ $num1 = $argv[2];
 $num2 = $argv[3];
 
 "with recursive Tree(Actor, Degree) as (
-    select 100 as Actor, 0 as Degree -- pass in starting actor id and 0 as the default degree
+    select (100) as Actor, 0 as Degree -- pass in starting actor id and 0 as the default degree
 union all
     select A.actor_id, T.Degree + 1 as Degree from Acting as A, Tree as T
-    where A.movie_id in (select A.movie_id from Acting as A 
-        where A.actor_id != 100 and A.actor_id = T.Actor)
+    where A.movie_id in (select A.movie_id from Acting as A
+        where A.actor_id = 100)
     and T.Degree < 7 -- six degrees for now
 )
 select * from Tree";
