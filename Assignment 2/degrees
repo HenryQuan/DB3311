@@ -6,7 +6,7 @@ require("a2.php");
 
 $usage = "Usage: $argv[0] Name Num1 Num2";
 // Init connection with database
-//$db = dbConnect(DB_CONNECTION);
+$db = dbConnect(DB_CONNECTION);
 
 // Check arguments
 if (count($argv) < 3) exit("$usage\n");
@@ -15,26 +15,24 @@ $name = $argv[1];
 $num1 = $argv[2];
 $num2 = $argv[3];
 
-"with recursive Tree(Actor, Degree) as (
-    select (539) as Actor, 0 as Degree -- pass in starting actor id and 0 as the default degree
+$q = "with recursive Tree(Actor, Degree) as (
+    select (select id from Actor where lower(name) = lower('$name')) as Actor, 0 as Degree -- pass in starting actor id and 0 as the default degree
 union all
     select distinct A.actor_id, (T.Degree + 1) as Degree from Acting as A, Tree as T
     where A.actor_id not in (Actor)
     and A.movie_id in (select distinct movie_id from Acting where actor_id in (Actor))
-    and T.Degree < 1 -- six degrees for now
+    and T.Degree < $num2 -- six degrees for now
 )
-select T.Actor, T.Degree, A.name from Tree as T, Actor as A
-where T.Actor = A.id";
+select A.name, T.Degree from Tree as T, Actor as A
+where T.Actor = A.id order by A.name";
 
-$degreeOne = "select actor_id, 1 as Degree from acting 
-    where actor_id != 593 and movie_id in 
-    (select movie_id from acting where actor_id = 100593)";
+$r = dbQuery($db, mkSQL($q));
 
-$degreeTwo = "with One as (select actor_id, 1 as Degree from acting 
-        where actor_id != 100 and movie_id in 
-        (select movie_id from acting where actor_id = 100))
-    select A.actor_id, 2 as Degree from Acting as A 
-    where actor_id not in (select actor_id from One) 
-    and movie_id in (select movie_id from acting where actor_id in (select actor_id from One)"
-// Get all connections between 
+$i = 1;
+while ($t = dbNext($r)) {
+  if ($t[1] >= $num1 && $t[1] <= $num2) {
+    echo "$i. $t[0] ($t[1])\n";
+    $i++;
+  }
+}
 ?>
