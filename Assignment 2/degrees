@@ -20,14 +20,25 @@ create or replace view Connection(A1, A2) as
 select distinct F.actor_id, S.actor_id from Acting as F, Acting as S
 where F.movie_id = S.movie_id and F.actor_id != S.actor_id;
 
-select * from Connection";
+-- find all connections recursively
+with recursive Tree(A1, A2, Degree) as (
+  select A1, A2, 1 as Degree from Connection where A1 = (select id from Actor where lower(name) = lower('$name'))
+union all
+  select T.A2, C.A2, T.Degree + 1 from Tree as T, Connection as C
+  where C.A1 = T.A2 and C.A2 != T.A1 and C.A2 != T.A2 and C.A1 != T.A1
+  and T.Degree < $num2
+)
+select * from Tree order by A2;
+-- format nicely
+-- select A.name, T.Degree from Tree as T, Actor as A
+-- where T.A2 = A.id order by A.name";
 
 $r = dbQuery($db, mkSQL($q));
 
 $i = 1;
 while ($t = dbNext($r)) {
   //if ($t[1] >= $num1 && $t[1] <= $num2) {
-    echo "$i. $t[0] ($t[1])\n";
+    echo "$i. $t[0] $t[1] $t[2]\n";
     $i++;
   //}
 }
