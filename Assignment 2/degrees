@@ -18,15 +18,22 @@ $num2 = $argv[3];
 "with recursive Tree(Actor, Degree) as (
     select 100 as Actor, 0 as Degree -- pass in starting actor id and 0 as the default degree
 union all
-    select A.actor_id, T.Degree + 1 as Degree from Acting as A, Tree as T
-    where A.movie_id in (select A.movie_id from Acting as A
-        where A.actor_id = 100)
-    and T.Degree < 7 -- six degrees for now
+    select A.actor_id, T.Degree + 1 from Acting as A, Tree as T
+    where actor_id not in (Actor)
+    and movie_id in (select movie_id from Acting where actor_id in (Actor))
+    and Degree < 7 -- six degrees for now
 )
 select * from Tree";
 
 $degreeOne = "select actor_id, 1 as Degree from acting 
     where actor_id != 100 and movie_id in 
     (select movie_id from acting where actor_id = 100)";
+
+$degreeTwo = "with One as (select actor_id, 1 as Degree from acting 
+        where actor_id != 100 and movie_id in 
+        (select movie_id from acting where actor_id = 100))
+    select A.actor_id, 2 as Degree from Acting as A 
+    where actor_id not in (select actor_id from One) 
+    and movie_id in (select movie_id from acting where actor_id in (select actor_id from One)"
 // Get all connections between 
 ?>
