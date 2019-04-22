@@ -15,8 +15,18 @@ $name = $argv[1];
 $num1 = $argv[2];
 $num2 = $argv[3];
 
-with StepOne as (select movie_id from acting where actor_id = 100),
-     StepTwo as (select A.actor_id from Acting as A, StepOne as O where A.movie_id = O.movie_id)
+with recursive Tree(Actor, Degree) as (
+    select A.actor_id, 1 as Degree from Acting as A,
+    (select movie_id from acting where actor_id = 100) as O
+    where A.movie_id = O.movie_id
+union all
+    select A.actor_id, O.Degree from Acting as A, 
+    (select T.movie_id, R.Degree + 1 as Degree from acting T, Tree as R where T.actor_id = R.Actor) as O 
+    where A.movie_id = O.movie_id
+)
+select * from Tree;
+
+
 select * from StepTwo;
 // Get all connections between 
 ?>
