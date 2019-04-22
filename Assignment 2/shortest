@@ -38,4 +38,12 @@ while ($t = dbNext($r)) {
   $i++;
 }
 
+/*
+This is really important for this question
+
+create or replace view Connection(A1, ID, A2) as
+select F.actor_id, F.movie_id, S.actor_id from Acting as F, Acting as S
+where F.movie_id = S.movie_id and F.actor_id != S.actor_id;
+*/
+
 ?>
