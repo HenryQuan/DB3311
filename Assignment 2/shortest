@@ -4,39 +4,39 @@
 // include the common PHP code file
 require("a2.php");
 
-$usage = "Usage: $argv[0] Name Num1 Num2";
+$usage = "Usage: $argv[0] Name1 Name2";
 // Init connection with database
 $db = dbConnect(DB_CONNECTION);
 
 // Check arguments
 if (count($argv) < 3) exit("$usage\n");
 
-$name = $argv[1];
-$num1 = $argv[2];
-$num2 = $argv[3];
+$name1 = $argv[1];
+$name2 = $argv[2];
+
 
 $q = "-- Create a table with all paths
 create or replace view Path(A1, A2, ID) as
 select distinct F.actor_id, S.actor_id, F.movie_id from Acting as F, Acting as S
 where F.movie_id = S.movie_id and F.actor_id != S.actor_id;
 
-
 -- find all paths recursively
 with recursive Tree(A1, A2, ID, SP) as (
-  select A1, A2, ID, 1 as SP from Path where A1 = (select id from Actor where lower(name) = lower('$name'))
+  select A1, A2, ID, 1 as SP from Path where A1 = (select id from Actor where lower(name) = lower('$name1'))
 union all
   select distinct T.A2, C.A2, C.ID, T.SP + 1 from Tree as T, Path as C
-  where C.A1 = T.A2 and C.A2 != T.A1 and C.A2 != T.A2 and T.SP < $num2
+  where C.A1 = T.A2 and C.A2 != T.A1 and C.A2 != T.A2 and T.SP < 2
 )
 
+select * from Tree
 -- format nicely and remove duplicates (there must be a better way)
-select A.name, F.SP from (select T.A2, min(T.SP) as SP from Tree as T group by T.A2) as F, Actor as A
-where F.A2 = A.id and F.A2 != (select id from Actor where lower(name) = lower('$name')) and F.SP >= $num1 and F.SP <= $num2 order by F.SP, A.name";
+--select A.name, F.SP from (select T.A2, min(T.SP) as SP from Tree as T group by T.A2) as F, Actor as A
+--where F.A2 = A.id and F.A2 != (select id from Actor where lower(name) = lower('$name1')) order by F.SP, A.name";
 
 $r = dbQuery($db, mkSQL($q));
 
 $i = 1;
 while ($t = dbNext($r)) {
-  echo "$i. $t[0] ($t[1])\n";
+  echo "$i. $t[0] $t[1] $t[2] $t[3]\n";
   $i++;
 }

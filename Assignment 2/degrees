@@ -9,7 +9,7 @@ $usage = "Usage: $argv[0] Name Num1 Num2";
 $db = dbConnect(DB_CONNECTION);
 
 // Check arguments
-if (count($argv) < 3) exit("$usage\n");
+if (count($argv) < 4) exit("$usage\n");
 
 $name = $argv[1];
 $num1 = $argv[2];
