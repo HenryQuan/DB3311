@@ -1,3 +1,2 @@
 # DB3311
-Assignments and labs for COMP3311.
-
+Assignments, labs and past exams for COMP3311.
